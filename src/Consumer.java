@@ -24,15 +24,26 @@ class Consumer extends Node{
     public static void main(String[] args) throws IOException, ClassNotFoundException, InterruptedException {
 
         Consumer c = new Consumer();
-        Broker1 b = new Broker1(Globals.broker_1_ip, Globals.consumer_accept_port1);
+        Broker b = new Broker(Globals.broker_1_ip, Globals.consumer_accept_port1);
         c.connect(b);
-        Request r = new Request("Rafael Krux", "Hopeful");
+
+        Request r = new Request("dogsounds", "Brandenburg Concerto III, Alle");
         //To check the version with an artist that the consumer doesn't know comment the line below
         //and change youw request
-        artistsOfBroker1.add(new ArtistName(r.artist));
+        //artistsOfBroker1.add(new ArtistName(r.artist));
         c.request(r);
-        c.clientDisconnect();
 
+        Thread.sleep(2000);
+
+        r = new Request("Rafael Krux", "Barnville");
+        c.request(r);
+
+        Thread.sleep(2000);
+
+        r = new Request("dogsounds", "Brandenburg Concerto III, Alle");
+        c.request(r);
+
+        Thread.sleep(99999);
     }
 
     //FUNCTIONS
@@ -41,22 +52,22 @@ class Consumer extends Node{
     //artist in a broker, otherwise he waits for the keys.
     void request(Request req) throws IOException, ClassNotFoundException {
         boolean exists = artistFound(req.artist);
-            System.out.print("\nSending request...");
+            System.out.println(this.getClass().getSimpleName() +  InetAddress.getByName(Globals.publisher_1_ip) + ":" + cs.getLocalPort() + " -> Sending request...");
             Value val = new Value(req);
             this.oocs.writeObject(val);
             this.oocs.flush();
             this.oocs.reset();
-            recieveKeys();
-            printArtistList();
+            //recieveKeys();
+            //printArtistList();
             this.oocs.writeObject(null);
-            System.out.println("Publisher_CLIENT" + InetAddress.getByName(Globals.publisher_1_ip) + ":" + this.cs.getLocalPort() + " -> Request sent successfully!");
+            System.out.println(this.getClass().getSimpleName() +  InetAddress.getByName(Globals.publisher_1_ip) + ":" + cs.getLocalPort() + " -> Request sent successfully!");
 
-            if (exists) {
+            //if (exists) {
                 pull();
-            }else {
-                recieveKeys();
-                printAllArtistList();
-            }
+            //}else {
+                //recieveKeys();
+                //printAllArtistList();
+            //}
 
     }
 
@@ -103,7 +114,7 @@ class Consumer extends Node{
         System.out.print("----------artistList----------" + "\n");
         artistList.forEach(ArtistName::printArtist);
         System.out.print("----------Brokers----------" + "\n");
-        artistList.forEach(ArtistName::printBroker);
+        artistList.forEach(ArtistName::printPublisher);
         System.out.print("----------Songs----------" + "\n");
         artistList.forEach(ArtistName::printSongList);
     }

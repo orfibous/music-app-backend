@@ -1,5 +1,7 @@
 import com.mpatric.mp3agic.InvalidDataException;
 import com.mpatric.mp3agic.UnsupportedTagException;
+import com.sun.codemodel.internal.JForEach;
+import sun.awt.windows.ThemeReader;
 
 import java.io.IOException;
 import java.math.BigInteger;
@@ -8,7 +10,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-class Broker2 extends Node{
+class Broker extends Node{
 
     static HashMap<String, Node> nodes = new HashMap<String, Node>();
     static ArrayList<ArtistName> artistList = new ArrayList<ArtistName>(1);
@@ -18,36 +20,46 @@ class Broker2 extends Node{
 
     //CONSTRUCTORS
 
-    Broker2(String ip) throws IOException {
+    Broker(String ip) throws IOException {
         super(ip);
     }
 
-    Broker2(String ip, int port) throws IOException {
+    Broker(String ip, int port) throws IOException {
         super(ip, port);
     }
 
-    public Broker2() {
+    public Broker() {
         super();
     }
 
     //MAIN METHOD
     public static void main(String[] args) throws IOException, ClassNotFoundException, InterruptedException, InvalidDataException, UnsupportedTagException {
 
-        Broker2 b = new Broker2();
-        b.acceptPublisherConnections();
-        b.getArtistList();
-        calculateKeys();
-        printKeys();
-        b.letArtistKnow();
+        Broker b1 = new Broker(Globals.broker_1_ip, Globals.broker_server_port1);
+        //nodes.put(b1.ip + ":" + b1.port, b1);
 
-        for (int t = 0; t<artistList.size(); t++) {
-            System.out.println("-----" + t + "  " +  artistList.get(t).getArtist());
-            artistList.get(t).printBroker();
-        }
+        Broker b2 = new Broker(Globals.broker_1_ip, Globals.broker_server_port2);
+        //nodes.put(b2.ip + ":" + b2.port, b2);
 
-        b.acceptConsumerConnections();
+        Broker b3 = new Broker(Globals.broker_1_ip, Globals.consumer_accept_port1);
+        //nodes.put(b3.ip + ":" + b3.port, b3);
 
-        b.upload(b.getNode("c0"), b.getNode("p0"));
+        b1.init();
+        b1.getArtistList();
+        b1.serverDisconnect();
+
+        b2.init();
+        b2.getArtistList();
+        b2.serverDisconnect();
+
+        //calculateKeys();
+        //printKeys();
+        //b.letArtistKnow();
+        //Publisher p = locatePublisher()
+        //b3.connect(p);
+
+        b3.init();
+        b3.upload();
 
     }
 
@@ -55,40 +67,72 @@ class Broker2 extends Node{
 
     //broker opens and listens for publishers to connect, each node is stored to the nodes list
     //the next one will connect to the next port
-    void acceptPublisherConnections() throws IOException {
-        Node p = new Node(Globals.broker_2_ip, Globals.publisher_accept_port2);
-        int i = 0;
-        while (i < 1) {
-            Node n = new Node(p.ip, Globals.publisher_accept_port2);
-            n.init();
-            nodes.put("p"+i, n);
 
-            if (n.s.isConnected()) {
-                Globals.publisher_accept_port2++;
+    //check is the requested artist is allocated here then forward the request to the publisher
+    void upload() throws IOException, ClassNotFoundException, InvalidDataException, UnsupportedTagException {
+        //sendKeys(source);
+        System.out.print("\n--------------------\nWaiting for transfers...\n--------------------\n");
+        Publisher p = new Publisher();
+        try {
+            int i=1;
+            while (true) {
+                System.out.print("\nTransferring chunk " + i + "...");
+                Value v = (Value) this.ois.readObject();
+                v.printValue();
+                if (i==1) {
+                    System.out.println(v.req.artist);
+                    p = locatePublisher(v.req.artist);
+                    System.out.println(p.ip);
+                    this.connect(p);
+                }
+
+                this.oocs.writeObject(v);
+                this.oocs.flush();
+                i++;
+            }
+
+        }
+        catch (NullPointerException npe) {
+            System.out.print("NULL\n--------------------\nValue transferred successfully!\n--------------------\n");
+        }
+        //this.oocs.writeObject(null);
+        this.download();
+
+    }
+
+
+
+    void download() throws IOException, ClassNotFoundException, InvalidDataException, UnsupportedTagException {
+
+        System.out.println("--------------------Waiting for transfers...-------------------");
+        try {
+            int i=1;
+            while (true) {
+                System.out.print("\nTransferring chunk " + i + "...");
+                Value v = (Value) this.oics.readObject();
+                v.printValue();
+                this.oos.writeObject(v);
+                this.oos.flush();
                 i++;
             }
         }
-    }
-
-    //Same with Consumers, each one is laso stored in the nodes list
-    void acceptConsumerConnections() throws IOException, ClassNotFoundException {
-        Node c = new Node(Globals.broker_2_ip, Globals.consumer_accept_port1);
-        int i = 0;
-        while (i < 1) {
-            Node n = new Node("c"+i, Globals.consumer_accept_port1);
-            n.init();
-            nodes.put("c"+i, n);
-
-            if (n.s.isConnected()) {
-                Globals.consumer_accept_port1++;
-                i++;
-            }
+        catch (NullPointerException npe) {
+            System.out.println("NULL\n--------------------\nValue transferred successfully!\n--------------------\n");
         }
+        this.oos.writeObject(null);
+        this.clientDisconnect();
+        this.upload();
     }
+
+
+
+
 
     //receives the artistList from the Publisher
     void getArtistList() throws IOException, ClassNotFoundException {
-        artistList = (ArrayList<ArtistName>) this.getNode("p0").ois.readObject();
+        ArrayList<ArtistName> temp;
+        temp = (ArrayList<ArtistName>) this.ois.readObject();
+        artistList.addAll(temp);
         printArtistList();
     }
 
@@ -161,7 +205,7 @@ class Broker2 extends Node{
     void letArtistKnow() throws IOException {
         for(int t = 0; t<artistsOfBroker1.size(); t++) {
             //System.out.println("----------Broker1---------");
-            artistsOfBroker1.get(t).setNode(Globals.broker_1_ip, Globals.consumer_accept_port1);
+            //artistsOfBroker1.get(t).setNode(Globals.broker_1_ip, Globals.consumer_accept_port1);
             /*System.out.println("-----" + t + "  " +  artistsOfBroker1.get(t).getArtist());
             artistsOfBroker1.get(t).printBroker();*/
 
@@ -169,14 +213,14 @@ class Broker2 extends Node{
 
         for(int v = 0; v<artistsOfBroker2.size(); v++) {
             //System.out.println("----------Broker2---------");
-            artistsOfBroker2.get(v).setNode(Globals.broker_2_ip, Globals.consumer_accept_port1);
+            //artistsOfBroker2.get(v).setNode(Globals.broker_2_ip, Globals.consumer_accept_port1);
             /*System.out.println("-----" + v + "  " +  artistsOfBroker2.get(v).getArtist());
             artistsOfBroker2.get(v).printBroker();*/
         }
 
         for(int n = 0; n<artistsOfBroker3.size(); n++) {
             //System.out.println("----------Broker3---------");
-            artistsOfBroker3.get(n).setNode(Globals.broker_3_ip, Globals.consumer_accept_port1);
+            //artistsOfBroker3.get(n).setNode(Globals.broker_3_ip, Globals.consumer_accept_port1);
             /*System.out.println("-----" + n + "  " +  artistsOfBroker3.get(n).getArtist());
             artistsOfBroker3.get(n).printBroker();*/
         }
@@ -209,65 +253,26 @@ class Broker2 extends Node{
 
     //sends the keys to the consumers, 3 lists with the artists registered to each broker
     void sendKeys(Node destination) throws IOException {
-        destination.oos.writeObject(artistsOfBroker1);
+        /*destination.oos.writeObject(artistsOfBroker1);
         destination.oos.writeObject(artistsOfBroker2);
-        destination.oos.writeObject(artistsOfBroker3);
+        destination.oos.writeObject(artistsOfBroker3);*/
+
+        destination.oos.writeObject(artistList);
     }
 
-    //sends the chunks of a musicFile right after the broker reads them from the publisher
-    void download(Node source, Node destination) throws IOException, ClassNotFoundException {
 
-        System.out.println("--------------------Waiting for transfers...-------------------");
-        try {
-            int i=1;
-            while (true) {
-                System.out.print("\nTransferring chunk " + i + "...");
-                Value v = (Value) source.ois.readObject();
-                v.printValue();
-                destination.oos.writeObject(v);
-                destination.oos.flush();
-                i++;
+
+    static Publisher locatePublisher(String a) throws InvalidDataException, IOException, UnsupportedTagException {
+        Publisher p = new Publisher();
+        for (int t=0; t<artistList.size(); t++) {
+            if (artistList.get(t).getArtist().equals(a)) {
+                p = artistList.get(t).publisher_id;
+            }
+            else {
+                System.out.println("No publisher for this artist");
             }
         }
-        catch (NullPointerException npe) {
-            System.out.println("NULL\n--------------------\nValue transferred successfully!\n--------------------\n");
-        }
-        destination.oos.writeObject(null);
-        this.acceptConsumerConnections();
-    }
-
-    //check is the requested artist is allocated here then forward the request to the publisher
-    void upload(Node source, Node destination) throws IOException, ClassNotFoundException {
-
-        System.out.print("\n--------------------\nWaiting for transfers...\n--------------------\n");
-        try {
-            int i=1;
-            while (true) {
-                System.out.print("\nTransferring chunk " + i + "...");
-                Value v = (Value) source.ois.readObject();
-                v.printValue();
-                boolean exists = artistFoundInBroker(v.req.getArtist());
-                if (exists) {
-                    destination.oos.writeObject(v);
-                    destination.oos.flush();
-                }else {
-                    sendKeys(source);
-                }
-                i++;
-            }
-
-        }
-        catch (NullPointerException npe) {
-            System.out.print("NULL\n--------------------\nValue transferred successfully!\n--------------------\n");
-        }
-        destination.oos.writeObject(null);
-        download(destination,source);
-
-    }
-
-
-    Node getNode(String nodeKey) {
-        return this.nodes.get(nodeKey);
+        return p;
     }
 
 
@@ -276,6 +281,7 @@ class Broker2 extends Node{
     static void printArtistList() {
         System.out.print("--------------------artistList--------------------" + "\n");
         artistList.forEach(ArtistName::printArtist);
+        artistList.forEach(ArtistName::printPublisher);
     }
 
     static void printKeys() {

@@ -1,3 +1,6 @@
+import com.mpatric.mp3agic.InvalidDataException;
+import com.mpatric.mp3agic.UnsupportedTagException;
+
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -6,41 +9,32 @@ class ArtistName implements Serializable {
 
     public String artist;
     public ArrayList<String> songList;
-    public Node broker_id;
+    public Publisher publisher_id;
 
     public ArtistName(String artist) {
         this.artist = artist;
         songList = new ArrayList<>();
     }
 
-    public ArtistName(ArtistName a) {
-        this.artist = a.getArtist();
-        songList = new ArrayList<>();
-    }
-
-    public void setNode(String ip, int port) throws IOException {
-        broker_id = new Node(ip,port);
+    public void setPublisherID(String ip, int port) throws IOException, InvalidDataException, UnsupportedTagException {
+        publisher_id = new Publisher(ip,port);
     }
 
     public String getArtist() {
         return artist;
     }
 
-    public void setArtist(String artist) {
-        this.artist = artist;
-    }
-
     public void printArtist() {
         System.out.println(artist);
     }
 
-    public void printBroker() {
-        System.out.println("Broker " + broker_id.ip + " in " + broker_id.port );
+    public void printPublisher() {
+        System.out.print("PublisherSERVER " + publisher_id.ip + ":" + publisher_id.port );
     }
 
     public void printSongList() {
         for (String s : songList) {
-            System.out.println(s);
+            System.out.println(s + "\n");
         }
     }
 
