@@ -140,9 +140,7 @@ class Publisher extends Node{
             if (mp3file.hasId3v1Tag()) {
                 ID3v1 tag =  mp3file.getId3v1Tag();
                 if ((tag.getArtist()!=null && !tag.getArtist().isEmpty())
-                        && (tag.getTitle()!=null && !tag.getTitle().isEmpty())
-                        && (tag.getAlbum()!=null && !tag.getAlbum().isEmpty())
-                        && (tag.getGenreDescription()!=null)) {
+                        && (tag.getTitle()!=null && !tag.getTitle().isEmpty())) {
                     MusicFile musicFile = new MusicFile(tag.getArtist(), tag.getTitle(), tag.getAlbum(), tag.getGenreDescription(), extract);
                     ArtistName artistName = new ArtistName(tag.getArtist());
                     musicList.add(musicFile);
@@ -152,9 +150,7 @@ class Publisher extends Node{
             else if (mp3file.hasId3v2Tag()) {
                 ID3v2 tag = mp3file.getId3v2Tag();
                 if ((tag.getArtist()!=null && !tag.getArtist().isEmpty())
-                        && (tag.getTitle()!=null && !tag.getTitle().isEmpty())
-                        && (tag.getAlbum()!=null && !tag.getAlbum().isEmpty())
-                        && (tag.getGenreDescription()!=null)) {
+                        && (tag.getTitle()!=null && !tag.getTitle().isEmpty())) {
                     MusicFile musicFile = new MusicFile(tag.getArtist(), tag.getTitle(), tag.getAlbum(), tag.getGenreDescription(), extract);
                     ArtistName artistName = new ArtistName(tag.getArtist());
                     musicList.add(musicFile);
