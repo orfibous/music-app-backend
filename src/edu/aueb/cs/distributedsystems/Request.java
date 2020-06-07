@@ -1,7 +1,10 @@
+package edu.aueb.cs.distributedsystems;
+
 import java.io.Serializable;
 
 class Request implements Serializable {
 
+    static final long serialVersionUID = 1L;
     String artist;
     String song;
 

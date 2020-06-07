@@ -1,9 +1,12 @@
+package edu.aueb.cs.distributedsystems;
+
 import sun.swing.MenuItemLayoutHelper;
 
 import java.io.Serializable;
 
 class MusicFile implements Serializable {
 
+    static final long serialVersionUID = 1L;
     String artist;
     String title;
     String album;

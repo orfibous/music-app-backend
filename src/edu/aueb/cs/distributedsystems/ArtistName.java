@@ -1,3 +1,5 @@
+package edu.aueb.cs.distributedsystems;
+
 import com.mpatric.mp3agic.InvalidDataException;
 import com.mpatric.mp3agic.UnsupportedTagException;
 
@@ -7,6 +9,7 @@ import java.util.ArrayList;
 
 class ArtistName implements Serializable {
 
+    static final long serialVersionUID = 1L;
     public String artist;
     public ArrayList<String> songList;
     public Publisher publisher_id; //which publishers has this artist

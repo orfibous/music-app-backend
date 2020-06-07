@@ -1,3 +1,5 @@
+package edu.aueb.cs.distributedsystems;
+
 import java.io.*;
 import java.net.InetAddress;
 import java.util.ArrayList;
@@ -5,11 +7,12 @@ import java.util.List;
 
 class Consumer extends Node{
 
+    static final long serialVersionUID = 1L;
     static ArrayList<ArtistName> artistList = new ArrayList<ArtistName>(1);
     static ArrayList<ArtistName> artistsOfBroker1 = new ArrayList<>();
     static ArrayList<ArtistName> artistsOfBroker2 = new ArrayList<>();
     static ArrayList<ArtistName> artistsOfBroker3 = new ArrayList<>();
-    static ArrayList<Value> currentSong = new ArrayList<Value>();
+    static List<Value> currentSong = new ArrayList<Value>();
 
     //CONSTRUCTORS
 

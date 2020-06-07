@@ -1,3 +1,5 @@
+package edu.aueb.cs.distributedsystems;
+
 import com.mpatric.mp3agic.*;
 import java.io.*;
 import java.net.InetAddress;
@@ -11,6 +13,7 @@ import java.util.stream.Stream;
 
 class Publisher extends Node{
 
+    static final long serialVersionUID = 1L;
     static List<String> filePathList = new ArrayList<String>(1);
     static ArrayList<MusicFile> musicList = new ArrayList<MusicFile>(1);
     static ArrayList<ArtistName> artistList = new ArrayList<ArtistName>(1);
@@ -241,18 +244,4 @@ class Publisher extends Node{
         }
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 }
-

@@ -1,3 +1,5 @@
+package edu.aueb.cs.distributedsystems;
+
 import java.io.Serializable;
 
 //All things that beeing send between our nodes are values.
@@ -5,6 +7,7 @@ import java.io.Serializable;
 
 class Value implements Serializable {
 
+    static final long serialVersionUID = 1L;
     MusicFile musicFile;
     Boolean finalChunk = false;
     Request req;

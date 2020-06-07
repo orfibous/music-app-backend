@@ -1,3 +1,5 @@
+package edu.aueb.cs.distributedsystems;
+
 import com.mpatric.mp3agic.InvalidDataException;
 import com.mpatric.mp3agic.UnsupportedTagException;
 
@@ -10,6 +12,7 @@ import java.util.HashMap;
 
 class Broker extends Node{
 
+    static final long serialVersionUID = 1L;
     static HashMap<String, Node> nodes = new HashMap<String, Node>();
     static ArrayList<ArtistName> artistList = new ArrayList<ArtistName>(1);
     static ArrayList<ArtistName> artistsOfBroker1 = new ArrayList<>();

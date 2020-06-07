@@ -1,13 +1,16 @@
+package edu.aueb.cs.distributedsystems;
+
 public class Globals {
     //public static final String path = "C:\\Users\\elena\\Google Drive\\DistributedSystems\\dataset3";
-    public static final String path = "/Users/cbcause/Downloads/dataset3";
+    public static final String path = "/home/captainlinux/IdeaProjects/MusicApp-2020/dataset3";
     public static final String myIP = "192.168.1.3";
 
     public static final String publisher_1_ip = myIP;
-    public static final String publisher_1_datapath = "C:\\Users\\elena\\Google Drive\\DistributedSystems\\dataset1";
+    public static final String publisher_1_datapath = "/home/captainlinux/IdeaProjects/MusicApp-2020/dataset1";
     public static final String publisher_2_ip = myIP;
-    public static final String publisher_2_datapath = "C:\\Users\\elena\\Google Drive\\DistributedSystems\\dataset2";
-
+    public static final String publisher_2_datapath = "/home/captainlinux/IdeaProjects/MusicApp-2020/dataset2";
+    public static final String publisher_3_ip = myIP;
+    public static final String publisher_3_datapath = path;
     public static final String broker_1_ip = myIP;
     public static final String broker_2_ip = myIP;
     public static final String broker_3_ip = myIP;

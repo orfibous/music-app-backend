@@ -1,3 +1,5 @@
+package edu.aueb.cs.distributedsystems;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -8,6 +10,7 @@ import java.net.Socket;
 
 class Node implements Serializable {
 
+    static final long serialVersionUID = 1L;
     String ip;
     int port;
     //server
