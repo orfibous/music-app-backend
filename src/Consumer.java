@@ -1,6 +1,7 @@
 import java.io.*;
 import java.net.InetAddress;
 import java.util.ArrayList;
+import java.util.List;
 
 class Consumer extends Node{
 
@@ -8,6 +9,7 @@ class Consumer extends Node{
     static ArrayList<ArtistName> artistsOfBroker1 = new ArrayList<>();
     static ArrayList<ArtistName> artistsOfBroker2 = new ArrayList<>();
     static ArrayList<ArtistName> artistsOfBroker3 = new ArrayList<>();
+    static ArrayList<Value> currentSong = new ArrayList<Value>();
 
     //CONSTRUCTORS
 
@@ -35,15 +37,15 @@ class Consumer extends Node{
 
         Thread.sleep(2000);
 
-        r = new Request("Rafael Krux", "Barnville");
-        c.request(r);
+        //r = new Request("Rafael Krux", "Barnville");
+        //c.request(r);
 
-        Thread.sleep(2000);
+        //Thread.sleep(2000);
 
-        r = new Request("dogsounds", "Brandenburg Concerto III, Alle");
-        c.request(r);
+        //r = new Request("dogsounds", "Brandenburg Concerto III, Alle");
+        //c.request(r);
 
-        Thread.sleep(99999);
+        //Thread.sleep(99999);
     }
 
     //FUNCTIONS
@@ -61,13 +63,11 @@ class Consumer extends Node{
             //printArtistList();
             this.oocs.writeObject(null);
             System.out.println(this.getClass().getSimpleName() +  InetAddress.getByName(Globals.publisher_1_ip) + ":" + cs.getLocalPort() + " -> Request sent successfully!");
+            pull();
 
-            //if (exists) {
-                pull();
-            //}else {
-                //recieveKeys();
-                //printAllArtistList();
-            //}
+            System.out.println("This is the song times 9 or ten");
+            currentSong.forEach(Value::printValue);
+
 
     }
 
@@ -80,6 +80,7 @@ class Consumer extends Node{
                 System.out.print("\nPlaying chunk " + i + "...");
                 Value v = (Value) this.oics.readObject();
                 v.printValue();
+                currentSong.add(v);
                 i++;
             }
         }

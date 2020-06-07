@@ -1,14 +1,13 @@
 public class Globals {
     //public static final String path = "C:\\Users\\elena\\Google Drive\\DistributedSystems\\dataset3";
     public static final String path = "/Users/cbcause/Downloads/dataset3";
-    public static final String myIP = "172.16.31.64";
+    public static final String myIP = "192.168.1.3";
 
     public static final String publisher_1_ip = myIP;
-    public static final String publisher_1_datapath = "/Users/cbcause/Downloads/dataset1";
+    public static final String publisher_1_datapath = "C:\\Users\\elena\\Google Drive\\DistributedSystems\\dataset1";
     public static final String publisher_2_ip = myIP;
-    public static final String publisher_2_datapath = "/Users/cbcause/Downloads/dataset2";
-    public static final String publisher_3_ip = myIP;
-    public static final String publisher_3_datapath = path;
+    public static final String publisher_2_datapath = "C:\\Users\\elena\\Google Drive\\DistributedSystems\\dataset2";
+
     public static final String broker_1_ip = myIP;
     public static final String broker_2_ip = myIP;
     public static final String broker_3_ip = myIP;

@@ -1,7 +1,5 @@
 import com.mpatric.mp3agic.InvalidDataException;
 import com.mpatric.mp3agic.UnsupportedTagException;
-import com.sun.codemodel.internal.JForEach;
-import sun.awt.windows.ThemeReader;
 
 import java.io.IOException;
 import java.math.BigInteger;
@@ -54,7 +52,6 @@ class Broker extends Node{
 
         //calculateKeys();
         //printKeys();
-        //b.letArtistKnow();
         //Publisher p = locatePublisher()
         //b3.connect(p);
 
@@ -202,31 +199,6 @@ class Broker extends Node{
         }
     }
 
-    void letArtistKnow() throws IOException {
-        for(int t = 0; t<artistsOfBroker1.size(); t++) {
-            //System.out.println("----------Broker1---------");
-            //artistsOfBroker1.get(t).setNode(Globals.broker_1_ip, Globals.consumer_accept_port1);
-            /*System.out.println("-----" + t + "  " +  artistsOfBroker1.get(t).getArtist());
-            artistsOfBroker1.get(t).printBroker();*/
-
-        }
-
-        for(int v = 0; v<artistsOfBroker2.size(); v++) {
-            //System.out.println("----------Broker2---------");
-            //artistsOfBroker2.get(v).setNode(Globals.broker_2_ip, Globals.consumer_accept_port1);
-            /*System.out.println("-----" + v + "  " +  artistsOfBroker2.get(v).getArtist());
-            artistsOfBroker2.get(v).printBroker();*/
-        }
-
-        for(int n = 0; n<artistsOfBroker3.size(); n++) {
-            //System.out.println("----------Broker3---------");
-            //artistsOfBroker3.get(n).setNode(Globals.broker_3_ip, Globals.consumer_accept_port1);
-            /*System.out.println("-----" + n + "  " +  artistsOfBroker3.get(n).getArtist());
-            artistsOfBroker3.get(n).printBroker();*/
-        }
-
-
-    }
 
     static Boolean exists(ArrayList<ArtistName> list, ArtistName a) {
         boolean exists = false;
@@ -240,16 +212,6 @@ class Broker extends Node{
         return exists;
     }
 
-    //checks if the given artist if registered in this broker
-    static boolean artistFoundInBroker(String artist) {
-        boolean found = false;
-        for (ArtistName a : artistsOfBroker1) {
-            if (artist.equals(a.artist)) {
-                found = true;
-            }
-        }
-        return found;
-    }
 
     //sends the keys to the consumers, 3 lists with the artists registered to each broker
     void sendKeys(Node destination) throws IOException {
