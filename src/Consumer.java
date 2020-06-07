@@ -28,52 +28,48 @@ class Consumer extends Node{
         Consumer c = new Consumer();
         Broker b = new Broker(Globals.broker_1_ip, Globals.consumer_accept_port1);
         c.connect(b);
+        //receive the artlistList from Broker
+        c.getArtistList();
 
         Request r = new Request("dogsounds", "Brandenburg Concerto III, Alle");
-        //To check the version with an artist that the consumer doesn't know comment the line below
-        //and change youw request
-        //artistsOfBroker1.add(new ArtistName(r.artist));
         c.request(r);
 
         Thread.sleep(2000);
 
-        //r = new Request("Rafael Krux", "Barnville");
-        //c.request(r);
+        r = new Request("Rafael Krux", "Barnville");
+        c.request(r);
 
-        //Thread.sleep(2000);
+        Thread.sleep(2000);
 
-        //r = new Request("dogsounds", "Brandenburg Concerto III, Alle");
-        //c.request(r);
+        r = new Request("dogsounds", "Brandenburg Concerto III, Alle");
+        c.request(r);
 
-        //Thread.sleep(99999);
+        Thread.sleep(99999);
     }
 
     //FUNCTIONS
 
-    //the consumer requests a song with this method, checks if he can find the registered
-    //artist in a broker, otherwise he waits for the keys.
+    //the consumer requests a song with this method and put it in a list
     void request(Request req) throws IOException, ClassNotFoundException {
-        boolean exists = artistFound(req.artist);
-            System.out.println(this.getClass().getSimpleName() +  InetAddress.getByName(Globals.publisher_1_ip) + ":" + cs.getLocalPort() + " -> Sending request...");
-            Value val = new Value(req);
-            this.oocs.writeObject(val);
-            this.oocs.flush();
-            this.oocs.reset();
-            //recieveKeys();
-            //printArtistList();
-            this.oocs.writeObject(null);
-            System.out.println(this.getClass().getSimpleName() +  InetAddress.getByName(Globals.publisher_1_ip) + ":" + cs.getLocalPort() + " -> Request sent successfully!");
-            pull();
 
-            System.out.println("This is the song times 9 or ten");
-            currentSong.forEach(Value::printValue);
+        System.out.println(this.getClass().getSimpleName() +  InetAddress.getByName(Globals.publisher_1_ip) + ":" + cs.getLocalPort() + " -> Sending request...");
+        Value val = new Value(req);
+        this.oocs.writeObject(val);
+        this.oocs.flush();
+        this.oocs.reset();
+        this.oocs.writeObject(null);
+        System.out.println(this.getClass().getSimpleName() +  InetAddress.getByName(Globals.publisher_1_ip) + ":" + cs.getLocalPort() + " -> Request sent successfully!");
+        pull();
+
+        System.out.println("This is the song times 9 or ten");
+        currentSong.forEach(Value::printValue);
 
 
     }
 
     //reads the chunks of the requested song
     void pull() throws IOException, ClassNotFoundException {
-
+        currentSong.clear();
         try {
             int i=1;
             while (true) {
@@ -89,35 +85,32 @@ class Consumer extends Node{
         }
     }
 
-    //checks is an artist is in a list
-    boolean artistFound(String artist) {
-        boolean found = false;
-        for (ArtistName a : artistsOfBroker1) {
-            if (artist.equals(a.artist)) {
-                found = true;
-            }
-        }
-        return found;
-    }
-
-    //reads the lists with the keys from broker
-    void recieveKeys () throws IOException, ClassNotFoundException {
+    //reads the artistList from Broker
+    void getArtistList() throws IOException, ClassNotFoundException {
         /*artistsOfBroker1 = (ArrayList<ArtistName>) this.oics.readObject();
         artistsOfBroker2 = (ArrayList<ArtistName>) this.oics.readObject();
         artistsOfBroker3 = (ArrayList<ArtistName>) this.oics.readObject();*/
-        artistList = (ArrayList<ArtistName>) this.oics.readObject();
 
+        artistList = (ArrayList<ArtistName>) this.oics.readObject();
+        printArtistList();
+        //printAll();
     }
 
     //PRINTING METHODS
 
-    static void printArtistList() {
+    static void printAll() {
         System.out.print("----------artistList----------" + "\n");
         artistList.forEach(ArtistName::printArtist);
         System.out.print("----------Brokers----------" + "\n");
         artistList.forEach(ArtistName::printPublisher);
         System.out.print("----------Songs----------" + "\n");
         artistList.forEach(ArtistName::printSongList);
+    }
+
+    static void printArtistList() {
+        System.out.print("--------------------artistList--------------------" + "\n");
+        artistList.forEach(ArtistName::printArtist);
+        artistList.forEach(ArtistName::printPublisher);
     }
 
     static void printAllArtistList() {

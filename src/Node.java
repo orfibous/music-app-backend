@@ -33,7 +33,7 @@ class Node implements Serializable {
         this.port = port;
     }
 
-    //initializes a node as a server, our broker
+    //initializes a node as a server
     void init() throws IOException {
         ss = new ServerSocket(this.port);
         System.out.print("\n" + this.getClass().getSimpleName() +  InetAddress.getByName(Globals.publisher_1_ip) + ":" + ss.getLocalPort() + " -> Waiting for client connection...\n");

@@ -21,9 +21,7 @@ class Publisher2 extends Node{
         super(ip, port);
     }
 
-    Publisher2() throws InvalidDataException, IOException, UnsupportedTagException {
-
-    }
+    Publisher2() { }
 
     Publisher2(String ip, int port, String musicFolder) throws InvalidDataException, IOException, UnsupportedTagException {
         super(ip, port);
@@ -72,7 +70,6 @@ class Publisher2 extends Node{
         catch (NullPointerException npe) {
             System.out.println("-------------------Request received successfully!-------------------");
         }
-        System.out.println("qqqqqqq");
     }
 
     //Locates the artist and song requested and then pushes it to Broker
@@ -107,7 +104,7 @@ class Publisher2 extends Node{
         this.oos.writeObject(null);
         this.oos.flush();
         this.oos.reset();
-        System.out.println("Publisher_CLIENT" + InetAddress.getByName(Globals.publisher_1_ip) + ":" + this.s.getLocalPort() + " -> Song sent successfully!");
+        System.out.println("Publisher" + InetAddress.getByName(Globals.publisher_1_ip) + ":" + this.s.getLocalPort() + " -> Song sent successfully!");
         this.serverDisconnect();
         this.listen();
     }
@@ -200,7 +197,6 @@ class Publisher2 extends Node{
                 }
             }
         }
-
         setPublisherIDs();
         printArtistSongList();
     }
@@ -210,9 +206,6 @@ class Publisher2 extends Node{
         this.oocs.writeObject(artistList);
         this.oocs.flush();
     }
-
-
-
 
     //PRINTING METHODS
 
@@ -244,7 +237,7 @@ class Publisher2 extends Node{
 
     public static void setPublisherIDs () throws InvalidDataException, IOException, UnsupportedTagException {
         for (ArtistName artistName : artistList) {
-            artistName.setPublisherID(Globals.publisher_1_ip, Globals.publisher_accept_port1);
+            artistName.setPublisherID(Globals.publisher_1_ip, Globals.publisher_accept_port2);
             artistName.printPublisher();
         }
     }

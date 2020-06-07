@@ -9,7 +9,7 @@ class ArtistName implements Serializable {
 
     public String artist;
     public ArrayList<String> songList;
-    public Publisher publisher_id;
+    public Publisher publisher_id; //which publishers has this artist
 
     public ArtistName(String artist) {
         this.artist = artist;
@@ -29,7 +29,7 @@ class ArtistName implements Serializable {
     }
 
     public void printPublisher() {
-        System.out.print("PublisherSERVER " + publisher_id.ip + ":" + publisher_id.port );
+        System.out.print("Publisher_SERVER " + publisher_id.ip + ":" + publisher_id.port + "\n");
     }
 
     public void printSongList() {

@@ -1,5 +1,8 @@
 import java.io.Serializable;
 
+//All things that beeing send between our nodes are values.
+//Containing the chunks of musicFiles and the user's request
+
 class Value implements Serializable {
 
     MusicFile musicFile;

@@ -42,6 +42,7 @@ class Broker extends Node{
         Broker b3 = new Broker(Globals.broker_1_ip, Globals.consumer_accept_port1);
         //nodes.put(b3.ip + ":" + b3.port, b3);
 
+        //the broker initializes as server and receives the artists from both Publishers
         b1.init();
         b1.getArtistList();
         b1.serverDisconnect();
@@ -52,22 +53,20 @@ class Broker extends Node{
 
         //calculateKeys();
         //printKeys();
-        //Publisher p = locatePublisher()
-        //b3.connect(p);
 
+        //then initializes as server for the users
         b3.init();
+        //sends the artistList to the consumer so he can see all songs
+        b3.notifyUser(artistList);
+        //Mode upload is activated, waits for requests, pushes them to publishers, receives
+        //chunks and send them to user.
         b3.upload();
 
     }
 
     //FUNCTIONS
 
-    //broker opens and listens for publishers to connect, each node is stored to the nodes list
-    //the next one will connect to the next port
-
-    //check is the requested artist is allocated here then forward the request to the publisher
     void upload() throws IOException, ClassNotFoundException, InvalidDataException, UnsupportedTagException {
-        //sendKeys(source);
         System.out.print("\n--------------------\nWaiting for transfers...\n--------------------\n");
         Publisher p = new Publisher();
         try {
@@ -79,7 +78,7 @@ class Broker extends Node{
                 if (i==1) {
                     System.out.println(v.req.artist);
                     p = locatePublisher(v.req.artist);
-                    System.out.println(p.ip);
+                    //System.out.println(p.ip);
                     this.connect(p);
                 }
 
@@ -118,12 +117,18 @@ class Broker extends Node{
         }
         this.oos.writeObject(null);
         this.clientDisconnect();
+        //After downloading the song to user mode upload is activated again like an eternal loop
         this.upload();
     }
 
-
-
-
+    //sends the artists to the consumer
+    void notifyUser(ArrayList<ArtistName> artistList) throws IOException {
+       /* this.oos.writeObject(artistsOfBroker1);
+        this.oos.writeObject(artistsOfBroker2);
+        this.oos.writeObject(artistsOfBroker3);*/
+        this.oos.writeObject(artistList);
+        this.oos.flush();
+    }
 
     //receives the artistList from the Publisher
     void getArtistList() throws IOException, ClassNotFoundException {
@@ -199,39 +204,15 @@ class Broker extends Node{
         }
     }
 
-
-    static Boolean exists(ArrayList<ArtistName> list, ArtistName a) {
-        boolean exists = false;
-        for(int t = 0; t<list.size(); t++) {
-            if (list.get(t).artist.equals(a.artist)) {
-                exists = true;
-            } else {
-                exists = false;
-            }
-        }
-        return exists;
-    }
-
-
-    //sends the keys to the consumers, 3 lists with the artists registered to each broker
-    void sendKeys(Node destination) throws IOException {
-        /*destination.oos.writeObject(artistsOfBroker1);
-        destination.oos.writeObject(artistsOfBroker2);
-        destination.oos.writeObject(artistsOfBroker3);*/
-
-        destination.oos.writeObject(artistList);
-    }
-
-
-
-    static Publisher locatePublisher(String a) throws InvalidDataException, IOException, UnsupportedTagException {
+    //the broker access the artists'info to see in which publisher he belongs
+    static Publisher locatePublisher(String a) {
         Publisher p = new Publisher();
         for (int t=0; t<artistList.size(); t++) {
             if (artistList.get(t).getArtist().equals(a)) {
                 p = artistList.get(t).publisher_id;
             }
             else {
-                System.out.println("No publisher for this artist");
+                //System.out.println("No publisher for this artist");
             }
         }
         return p;
