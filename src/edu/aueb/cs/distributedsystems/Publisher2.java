@@ -77,10 +77,10 @@ class Publisher2 extends Node{
 
     //Locates the artist and song requested and then pushes it to Broker
     void locate(Request req) throws InvalidDataException, IOException, UnsupportedTagException, ClassNotFoundException {
-        System.out.println("\n" + this.oics.getClass().getSimpleName() + InetAddress.getByName(Globals.publisher_1_ip) + " -> Got Request for \"" + req.getArtist() + " - " + req.getSong() + "\" from Broker. Locating...");
+        System.out.println("\n" + this.oics.getClass().getSimpleName() + InetAddress.getByName(Globals.publisher_2_ip) + " -> Got Request for \"" + req.getArtist() + " - " + req.getSong() + "\" from Broker. Locating...");
         for (MusicFile m : musicList) {
             if (m.getArtist().equals(req.artist) && m.getTitle().equals(req.song)) {
-                System.out.println("\n" + this.oics.getClass().getSimpleName() + InetAddress.getByName(Globals.publisher_1_ip) + " -> Located \"" + req.getArtist() + " - " + req.getSong() + "\" Pushing...");
+                System.out.println("\n" + this.oics.getClass().getSimpleName() + InetAddress.getByName(Globals.publisher_2_ip) + " -> Located \"" + req.getArtist() + " - " + req.getSong() + "\" Pushing...");
                 m.printMusic();
                 push(m);
             }
@@ -236,7 +236,7 @@ class Publisher2 extends Node{
 
     public static void setPublisherIDs () throws InvalidDataException, IOException, UnsupportedTagException {
         for (ArtistName artistName : artistList) {
-            artistName.setPublisherID(Globals.publisher_1_ip, Globals.publisher_accept_port2);
+            artistName.setPublisherID(Globals.publisher_2_ip, Globals.publisher_accept_port2);
             artistName.printPublisher();
         }
     }

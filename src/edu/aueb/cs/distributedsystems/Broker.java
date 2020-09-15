@@ -138,7 +138,7 @@ class Broker extends Node{
         ArrayList<ArtistName> temp;
         temp = (ArrayList<ArtistName>) this.ois.readObject();
         artistList.addAll(temp);
-        printArtistList();
+        //printArtistList();
     }
 
     //receives a String and returns the hash with SHA-1 method
