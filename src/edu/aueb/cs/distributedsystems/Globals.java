@@ -1,13 +1,10 @@
 package edu.aueb.cs.distributedsystems;
 
 public class Globals {
-    public static final String myIP = "192.168.1.187";
+    public static final String myIP = "ENTER_IP";
 
-    //10.147.19.29
-
-
-    public static final String publisher_1_datapath = "C:\\Users\\elena\\Desktop\\MusicApp-8-4-loopfix\\dataset1";
-    public static final String publisher_2_datapath = "C:\\Users\\elena\\Desktop\\MusicApp-8-4-loopfix\\dataset2";
+    public static final String publisher_1_datapath = "ENTER_PATH";
+    public static final String publisher_2_datapath = "ENTER_PATH";
 
     public static final String publisher_1_ip = myIP;
     public static final String publisher_2_ip = myIP;
